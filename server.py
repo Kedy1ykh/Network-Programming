@@ -22,7 +22,7 @@ if len(sys.argv) < 3:
 # takes the first argument from command prompt as IP address
 HOST = str(sys.argv[1])
 # takes second argument from command prompt as port number
-PORT = str(sys.argv[2])
+PORT = int(sys.argv[2])
 
 """"binds the server to an entered IP address and at the 
 specified port number.

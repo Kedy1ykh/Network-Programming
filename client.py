@@ -11,10 +11,10 @@ if len(sys.argv) < 3:
     sys.exit()
 
 IP = str(sys.argv[1])
-PORT = str(sys.argv[2])
+PORT = int(sys.argv[2])
 
 server.connect((IP, PORT)) 
-print "Socket Connected to " + IP + " on Port " + PORT 
+print "Socket Connected to " + IP + " on Port " + str(PORT) 
 
 while True:
         # maintains a list of possible input stream
@@ -28,7 +28,7 @@ while True:
         to send a message, then the if condition will hold true
         below. If the user wants to send a message, the else
         condition will evaluate as true"""
-        read_sockets, write_socket, error_socket = select.select(socket_list,[],[])
+        read_sockets, write_socket, error_socket = select.select(sockets_list,[],[])
         
         for socks in read_sockets:
             if socks == server:
