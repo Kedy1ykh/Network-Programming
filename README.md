@@ -1,11 +1,9 @@
 # Network-Programming
-Willis | Simple Chatclient
+Willis | Simple Tools
 --------------------------
-1) The original source code is from [Geeksforgeeks](https://www.geeksforgeeks.org/simple-chat-room-using-python/)
-  * slight modification with error catching 
-  * message for invalid input 
-  * message for proper input
-  * message for successful binding and connecting
-2) Future updates
-  * Maybe SSL?
-  * encrypted message?
+1) Simple Client / Server 
+  * binding and connecting to server
+2) Python version of simplified netcat 
+  * listening to port
+  * connecting to port
+  * sending file to destination port (/bin/bash?)

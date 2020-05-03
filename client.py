@@ -6,15 +6,15 @@ import sys
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 if len(sys.argv) < 3:
-    print "Invalid inputs"
-    print "eg: Client.py <ip> <port>"
+    print("Invalid inputs")
+    print("eg: Client.py <ip> <port>")
     sys.exit()
 
 IP = str(sys.argv[1])
 PORT = int(sys.argv[2])
 
 server.connect((IP, PORT)) 
-print "Socket Connected to " + IP + " on Port " + str(PORT) 
+print("Socket Connected to " + IP + " on Port " + str(PORT))
 
 while True:
         # maintains a list of possible input stream
@@ -33,10 +33,10 @@ while True:
         for socks in read_sockets:
             if socks == server:
                 message = socks.recv(2048)
-                print message
+                print(message)
             else:
                 message = sys.stdin.readline()
-                server.send(message)
+                server.send(message.encode())
                 sys.stdout.write("<You>")
                 sys.stdout.write(message)
                 sys.stdout.flush()
