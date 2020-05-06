@@ -84,12 +84,12 @@ def server_loop():
 
     while True:
         client_socket, addr = server.accept()
-        with client_socket:
-            print("[*] Accepted connection from: ", addr[0])
-            # spin off a thread to handle our new client
-            client_thread = threading.Thread(target=client_handler,
-                                             args=(client_socket,))
-            client_thread.start()
+        # with client_socket:
+        print(f"[*] Accepted connection from {addr[0]} : {addr[1]}")
+        # spin off a thread to handle our new client
+        client_thread = threading.Thread(target=client_handler,
+                                         args=(client_socket,))
+        client_thread.start()
 
 
 def run_command(command):
@@ -98,12 +98,17 @@ def run_command(command):
 
     # run the command and get the output back
     try:
-        output = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
-    except:
-        output = "Failed to execute command.\r\n"
-
+        output = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        if len(output.stderr.decode('utf-8')):
+            out = output.stderr.decode('utf-8')
+        else:
+            out = output.stdout.decode('utf-8')
+    except subprocess.CalledProcessError as err:
+        print(f"[*] Failed to execute command:  {command}\r\n")
+        print(str(err))
+    print(f"[*] Succeeded executing command: {command}\r\n")
     # send the output back to the client
-    return output
+    return out
 
 
 def client_handler(client_socket):
@@ -145,24 +150,25 @@ def client_handler(client_socket):
     # now we go into another loop if a command shell was requested
 
     if command:
+
         while True:
             # show a simple prompt
-
-            client_socket.send("<FakeNC:#> ".encode())
+            client_socket.send(b"<FakeNC:#> ")
             # now we receive until we see a linefeed (enter key)
             cmd_buffer = b""
             try:
-                while b"\n" not in cmd_buffer:
-                    print("inside while loop")
-                    cmd_buffer += client_socket.recv(1024)
+                while "\r\n" not in cmd_buffer.decode('utf-8'):
+                    recv_data = client_socket.recv(1024)
+                    cmd_buffer += recv_data
+                    # print(cmd_buffer)
             except socket.error as err:
                 print(str(err))
 
             # send back the command output
-            response = run_command(cmd_buffer.decode())
+            response = run_command(cmd_buffer.decode('utf-8'))
 
             # send back the response
-            client_socket.send(response)
+            client_socket.send(response.encode())
 
 
 def main():
